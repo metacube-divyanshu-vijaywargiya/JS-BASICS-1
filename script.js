@@ -20,16 +20,26 @@ function startGame() {
 
     guessButton.addEventListener('click', function() {
         const playerGuess = parseInt(document.getElementById('guessInput').value);
+
+        if (isNaN(playerGuess) || playerGuess < 1 || playerGuess > 100) {
+            resultText.innerHTML = "Please enter a valid number between 1 and 100.";
+            resultText.style.color = "red";
+            return; 
+        }
+
         previousGuesses.push(playerGuess);
         turnsLeft--;
 
         if (playerGuess === numberToGuess) {
             resultText.innerHTML = `Congratulations! You guessed the number ${numberToGuess} correctly!`;
+            resultText.style.color = "green"; 
             askToPlayAgain();
         } else if (playerGuess < numberToGuess) {
             resultText.innerHTML = "Your guess is too low.";
+            resultText.style.color = "red";
         } else {
             resultText.innerHTML = "Your guess is too high.";
+            resultText.style.color = "red";
         }
 
         if (turnsLeft > 0) {
