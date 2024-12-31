@@ -3,7 +3,7 @@ function startGame() {
     let turnsLeft = 10;
     const previousGuesses = [];
     const gameDiv = document.getElementById('game');
-    console.log(numberToGuess)
+    console.log(numberToGuess);
 
     gameDiv.innerHTML = `
         <p>I have chosen a number between 1 and 100.</p>
@@ -15,11 +15,13 @@ function startGame() {
     `;
 
     const guessButton = document.getElementById('guessButton');
+    const guessInput = document.getElementById('guessInput');
     const resultText = document.getElementById('result');
     const previousGuessesText = document.getElementById('previousGuesses');
 
-    guessButton.addEventListener('click', function() {
-        const playerGuess = parseInt(document.getElementById('guessInput').value);
+    // Function to handle the guessing logic
+    function handleGuess() {
+        const playerGuess = parseInt(guessInput.value);
 
         if (isNaN(playerGuess) || playerGuess < 1 || playerGuess > 100) {
             resultText.innerHTML = "Please enter a valid number between 1 and 100.";
@@ -29,10 +31,13 @@ function startGame() {
 
         previousGuesses.push(playerGuess);
         turnsLeft--;
-
+        
         if (playerGuess === numberToGuess) {
             resultText.innerHTML = `Congratulations! You guessed the number ${numberToGuess} correctly!`;
+            guessInput.style.display = 'none';
+            guessButton.style.display = 'none';
             resultText.style.color = "green"; 
+            previousGuessesText.innerHTML = `You have ${turnsLeft} turns left. Your previous guesses: ${previousGuesses.join(', ')}`;
             askToPlayAgain();
         } else if (playerGuess < numberToGuess) {
             resultText.innerHTML = "Your guess is too low.";
@@ -41,15 +46,29 @@ function startGame() {
             resultText.innerHTML = "Your guess is too high.";
             resultText.style.color = "red";
         }
-
+        
         if (turnsLeft > 0) {
             previousGuessesText.innerHTML = `You have ${turnsLeft} turns left. Your previous guesses: ${previousGuesses.join(', ')}`;
         } else {
             resultText.innerHTML = `Sorry, you've run out of turns. The number was ${numberToGuess}.`;
+            previousGuessesText.style.display = 'none';
+            guessInput.style.display = 'none';
+            guessButton.style.display = 'none';
             askToPlayAgain();
+        }
+    }
+
+    // Event listener for the Guess button
+    guessButton.addEventListener('click', handleGuess);
+
+    // Event listener for the Enter key in the input field
+    guessInput.addEventListener('keydown', function(event) {
+        if (event.key === 'Enter') {
+            handleGuess();
         }
     });
 }
+
 
 function askToPlayAgain() {
     const gameDiv = document.getElementById('game');
